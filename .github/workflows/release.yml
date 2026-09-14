@@ -33,7 +33,7 @@ jobs:
 
           # ========== Windows ==========
           - os: windows-latest
-            target: x86_64-pc-windows-msvc
+            target: x64-pc-windows-msvc
             binary_name: w8c.exe
             archive_name: w8c-windows-x64.zip
             package_format: zip
@@ -46,7 +46,7 @@ jobs:
 
           # ========== macOS ==========
           - os: macos-latest
-            target: x86_64-apple-darwin
+            target: x64-apple-darwin
             binary_name: w8c
             archive_name: w8c-macos-x64.tar.gz
             package_format: tar.gz
