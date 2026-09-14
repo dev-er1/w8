@@ -1,0 +1,6 @@
+[workspace]
+resolver = "3"
+members = ["libw8", "w8-core"]
+
+[profile.dev]
+debug = 1

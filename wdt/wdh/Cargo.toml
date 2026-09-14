@@ -1,0 +1,12 @@
+[package]
+name = "wdh"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.96.0"
+description = "W8 Default Host (WDH)"
+repository = "https://github.com/dev-er1/w8"
+
+[dependencies]
+w8-core = { path = "../../w8/w8-core", version = "0.1.0" }
+terminal_size = "0.4.4"

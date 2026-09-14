@@ -1,0 +1,24 @@
+[package]
+name = "w8-core"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.96.0"
+description = "Core of W8."
+repository = "https://github.com/dev-er1/w8"
+
+[dependencies]
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61.2", features = [
+    "Win32_System_Memory",
+]}
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2.189"
+
+[dev-dependencies]
+criterion = "0.8.2"
+
+[[bench]]
+name = "bench_vm"
+harness = false

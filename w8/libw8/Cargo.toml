@@ -1,0 +1,12 @@
+[package]
+name = "libw8"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.96.0"
+description = "Library for using W8."
+repository = "https://github.com/dev-er1/w8"
+
+[dependencies]
+w8-core = { path = "../w8-core", version = "0.1.0" }
+wdasm = { path = "../../wdt/wdasm", version = "0.1.0" }
