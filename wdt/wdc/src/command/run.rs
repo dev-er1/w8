@@ -22,6 +22,7 @@ pub struct RunArguments {
     pub time: bool,
     pub memory: Option<usize>,
     pub executeby: ExecuteVariant,
+    pub is_assembly: bool,
 }
 
 pub fn run(args: RunArguments) -> i32 {
@@ -39,8 +40,7 @@ pub fn run(args: RunArguments) -> i32 {
             return 1;
         }
         BytecodeSource::Bytes(bytes)
-    } else if is_assembly(&args.file) {
-        // An W8 Assembly file: compile it into instructions and execute.
+    } else if is_assembly(&args.file) | args.is_assembly {
         let instructions = match W8Assembler::assemble_from_path(&args.file) {
             Ok(instructions) => instructions,
             Err(e) => {

@@ -22,11 +22,13 @@ pub fn route(cmd: Command) -> i32 {
             time,
             memory,
             execute,
+            is_assembly
         } => run::run(RunArguments {
             file,
             time,
             memory,
             executeby: execute,
+            is_assembly
         }),
         Command::Compile { file, output, time } => {
             compile::compile(CompileArguments { file, output, time })

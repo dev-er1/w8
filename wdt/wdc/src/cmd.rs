@@ -22,6 +22,8 @@ pub enum Command {
         memory: Option<usize>,
 
         execute: ExecuteVariant,
+
+        is_assembly: bool,
     },
 
     /// `w8c compile <file> [--output <path>] [--time]`
@@ -94,6 +96,10 @@ pub const COMMAND: &[CommandInfo] = &[
             FlagInfo {
                 usage: "--execute-by <variant>",
                 description: "Execute the program using the specified option (`inter` -- interpreter, `jit` -- JIT compiler).",
+            },
+            FlagInfo {
+                usage: "--assembly",
+                description: "Specifies that the file is in W8 Assembly format. By default, whether the specified file is in W8 format is determined by the file extension (`.wa`)."
             },
         ],
     },

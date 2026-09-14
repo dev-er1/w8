@@ -60,6 +60,7 @@ fn parse_run(args: &[String]) -> Result<Command, CLIError> {
         .typed_value::<usize>("memory", &["--memory"])
         .flag("time", &["--time"])
         .typed_value::<String>("execute-by", &["--execute-by"])
+        .flag("assembly", &["--assembly"])
         .parse(argparser::str::Source::from_iter(args.iter().cloned()));
 
     if let Some(err) = matches.errors.clone().first() {
@@ -70,8 +71,6 @@ fn parse_run(args: &[String]) -> Result<Command, CLIError> {
         ));
     }
 
-    // `positional()[0]` is always the command name (“run”), since we parse
-    // the full arguments. The file, therefore, is at index `1`.
     let file = matches.get(1).ok_or_else(|| {
         CLIError::new(
             CLIErrorKind::MissingValueForCommand("run".to_string()),
@@ -109,6 +108,7 @@ fn parse_run(args: &[String]) -> Result<Command, CLIError> {
         time: matches.flag("time"),
         memory: matches.get_one::<usize>("memory").copied(),
         execute,
+        is_assembly: matches.flag("assembly"),
     })
 }
 
