@@ -1,0 +1,7 @@
+[package]
+name = "wdasm"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+w8-core = { path = "../../w8/w8-core" }

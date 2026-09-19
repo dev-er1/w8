@@ -1,0 +1,111 @@
+name: Release CD
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  publish-release:
+    name: Publish for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # ========== Linux ==========
+          - os: ubuntu-latest
+            target: x64-unknown-linux-gnu
+            binary_name: w8c
+            archive_name: w8c-linux-x64.tar.gz
+            package_format: tar.gz
+
+          # ``x86-unknown-linux-gnu` is no longer supported in Rust.
+
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            binary_name: w8c
+            archive_name: w8c-linux-aarch64.tar.gz
+            package_format: tar.gz
+
+          # ========== Windows ==========
+          - os: windows-latest
+            target: x64-pc-windows-msvc
+            binary_name: w8c.exe
+            archive_name: w8c-windows-x64.zip
+            package_format: zip
+
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
+            binary_name: w8c.exe
+            archive_name: w8c-windows-aarch64.zip
+            package_format: zip
+
+          # ========== macOS ==========
+          - os: macos-latest
+            target: x64-apple-darwin
+            binary_name: w8c
+            archive_name: w8c-macos-x64.tar.gz
+            package_format: tar.gz
+
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            binary_name: w8c
+            archive_name: w8c-macos-aarch64.tar.gz
+            package_format: tar.gz
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Enable Rust cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Install cross
+        if: runner.os == 'Linux'
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+      - name: Build (Linux)
+        if: runner.os == 'Linux'
+        working-directory: wdt
+        run: cross build --release --package wdc --target ${{ matrix.target }}
+
+      - name: Build (Windows & macOS)
+        if: runner.os != 'Linux'
+        working-directory: wdt
+        run: cargo build --release --package wdc --target ${{ matrix.target }}
+
+      - name: Package Windows asset
+        if: matrix.package_format == 'zip'
+        shell: pwsh
+        working-directory: wdt
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          Copy-Item "target/${{ matrix.target }}/release/${{ matrix.binary_name }}" "dist/w8c.exe"
+          Compress-Archive -Path "dist/w8c.exe" -DestinationPath "${{ matrix.archive_name }}" -Force
+
+      - name: Package Unix asset
+        if: matrix.package_format == 'tar.gz'
+        shell: bash
+        working-directory: wdt
+        run: |
+          mkdir -p dist
+          cp "target/${{ matrix.target }}/release/${{ matrix.binary_name }}" "dist/w8c"
+          tar -czf "${{ matrix.archive_name }}" -C dist w8c
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: wdt/${{ matrix.archive_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

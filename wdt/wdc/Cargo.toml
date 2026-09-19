@@ -1,0 +1,17 @@
+[package]
+name = "wdc"
+version = "0.1.0"
+edition = "2024"
+license = "Apache-2.0"
+rust-version = "1.96.0"
+description = "W8 default CLI."
+repository = "https://github.com/dev-er1/w8"
+
+[dependencies]
+argparser = "0.2.1"
+libw8 = { path = "../../w8/libw8", version = "0.1.0" }
+wdh = { path = "../wdh", version = "0.1.0" }
+
+[[bin]]
+name = "w8c"
+path = "src/main.rs"

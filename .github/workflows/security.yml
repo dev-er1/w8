@@ -1,0 +1,34 @@
+name: Security
+
+on:
+  push:
+    paths:
+      - ".github/workflows/security.yml"
+      - "**/Cargo.toml"
+      - "**/Cargo.lock"
+      - "**/audit.toml"
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+
+jobs:
+  audit:
+    name: Audit (${{ matrix.workspace }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: [w8, wdt]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Audit Rust Dependencies
+        uses: actions-rust-lang/audit@v1
+        with:
+          workingDirectory: ${{ matrix.workspace }}
+          denyWarnings: true

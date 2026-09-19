@@ -1,0 +1,7 @@
+target/
+
+*.exe
+
+lab/
+
+.vscode/

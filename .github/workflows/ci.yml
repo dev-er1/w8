@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  ci:
+    name: CI (${{ matrix.workspace }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        workspace: [w8, wdt]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Enable Rust Cache
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check workspace
+        run: cargo check --manifest-path ${{ matrix.workspace }}/Cargo.toml
+
+      - name: Check formatting
+        run: cargo fmt --all --check --manifest-path ${{ matrix.workspace }}/Cargo.toml
+
+      - name: Build workspace
+        run: cargo build --release --manifest-path ${{ matrix.workspace }}/Cargo.toml
+
+      - name: Test
+        run: cargo test --workspace --release --manifest-path ${{ matrix.workspace }}/Cargo.toml
+
+      - name: Check idiomatic Rust
+        run: cargo clippy --all-targets --all-features --manifest-path ${{ matrix.workspace }}/Cargo.toml -- -D warnings
