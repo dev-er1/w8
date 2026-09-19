@@ -130,8 +130,10 @@ impl WVM {
             let base = unsafe { code.as_ptr().add(ip * SLOTS) };
 
             // SAFETY: the header is the instruction's first slot (within bounds);
-            // it stores the handler address, see [`encode`].
-            let handler: Handler = unsafe { std::mem::transmute(*base) };
+            // it stores the handler address, see [`encode`]. The address is
+            // pointer-sized: it round-trips through `usize` so the same code
+            // works on 64-bit and 32-bit targets.
+            let handler: Handler = unsafe { std::mem::transmute((*base as usize) as *const ()) };
 
             // SAFETY: the handler reads only the operand slots
             // of the current instruction, see [`Handler`].
@@ -251,8 +253,10 @@ fn encode(program: &[Instruction]) -> Result<Vec<u64>, VMError> {
         // in the hot loop it is absent.
         let handler = JUMP_TABLE[instr.opcode as usize * 8 + kinds as usize];
 
-        // SAFETY: `Handler` is a function pointer; on the target platforms
-        // of W8 (64-bit) it is representable as `u64`.
+        // SAFETY: `Handler` is a function pointer; cast through a raw
+        // pointer and then to `u64` so the address round-trips on both
+        // 64-bit and 32-bit targets (see the decoding side in
+        // [`WVM::interpretate`]).
         code.push(handler as *const () as u64);
         code.push(flatten(instr.operand1));
         code.push(flatten(instr.operand2));

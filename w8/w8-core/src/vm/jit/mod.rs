@@ -138,6 +138,7 @@ impl JIT {
                     got: self.out.info0 as usize,
                     memory_length: self.out.info1 as usize,
                 })),
+                VmcallOut::DIVISION_BY_ZERO => Err(VMError::new(VMErrorKind::DivisionByZero)),
                 _ => unreachable!("unknown JIT runtime status"),
             }
         } else {

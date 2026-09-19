@@ -1,7 +1,9 @@
 // w8-core/src/vm/err.rs
 use std::fmt::{self, Display, Formatter};
 
-use crate::{isa::operand::OperandKind, vm::jit::memory::MemoryProtection};
+use crate::isa::operand::OperandKind;
+#[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
+use crate::vm::jit::memory::MemoryProtection;
 
 #[derive(Debug)]
 pub enum VMErrorKind {
@@ -69,6 +71,7 @@ pub enum VMErrorKind {
     JITMemoryProtectionFailed,
 
     /// Can not [write](crate::vm::jit::memory::JITMemory::write) code in the current page.
+    #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
     CantWriteCodeInTheCurrentPage(MemoryProtection),
 }
 
@@ -100,6 +103,7 @@ impl Display for VMErrorKind {
             Self::JITAllocationFailed => write!(f, "JIT compiler's memory allocation failed"),
             Self::JITMemoryOutOfBounds => write!(f, "JIT compiler's memory out of bounds"),
             Self::JITMemoryProtectionFailed => write!(f, "failed to change JIT memory protection"),
+            #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
             Self::CantWriteCodeInTheCurrentPage(protection) => write!(
                 f,
                 "It is not possible to write code on the current page because the current \

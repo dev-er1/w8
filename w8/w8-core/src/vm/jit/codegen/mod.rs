@@ -97,6 +97,10 @@ impl VmcallOut {
     /// `VMCALL` arguments block outside memory (`info0` and `info1` hold the
     /// address and the memory length).
     pub const INVALID_ADDRESS: u64 = 4;
+
+    /// 64-bit division or remainder with a zero divisor (reported by the
+    /// x86 division helpers).
+    pub const DIVISION_BY_ZERO: u64 = 5;
 }
 
 impl Default for VmcallOut {

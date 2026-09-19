@@ -13,7 +13,7 @@ pub mod interpreter;
 pub mod memory;
 pub mod register_file;
 
-#[cfg(target_arch = "x86_64")]
+#[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
 pub mod jit;
 
 use crate::{
@@ -23,7 +23,7 @@ use crate::{
 
 #[derive(Default, PartialEq, Clone, Copy)]
 pub enum ExecuteVariant {
-    #[cfg(target_arch = "x86_64")]
+    #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
     ByJIT,
 
     #[default]
