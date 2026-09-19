@@ -1,8 +1,7 @@
-use w8_core::vm::ExecuteVariant;
 // Tests for `RET`.
 use w8_core::{
     isa::{instruction::Instruction, opcode::OperationCode, register::Register},
-    vm::{WVM, err::VMErrorKind},
+    vm::{ExecuteVariant, WVM, err::VMErrorKind},
 };
 
 use crate::vm_tests::helpers::*;

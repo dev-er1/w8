@@ -469,6 +469,29 @@ impl JITCodegen {
             machine_code.extend(code);
         }
 
+        // A program containing `RET` has the error stub right after the
+        // last instruction: falling through the end would land in it and
+        // spuriously report `EMPTY_CALL_STACK`. A trailing jump to the
+        // epilogue closes that path, mirroring the interpreter (running
+        // past the end exits silently). It is skipped when the last
+        // instruction never falls through (`JMP`, `CALL`, `RET`).
+        //
+        // `jmp rel32`
+        // `E9 <cd>`
+        if need_error_stub
+            && instructions.last().is_some_and(|i| {
+                !matches!(
+                    i.opcode,
+                    OperationCode::JMP | OperationCode::CALL | OperationCode::RET
+                )
+            })
+        {
+            fixups.push(Fixup::RelToEpilogue {
+                pos: machine_code.len() + 1,
+            });
+            machine_code.extend_from_slice(&[0xE9, 0, 0, 0, 0]);
+        }
+
         // Error stub: `RET` on an empty call stack reports the failure and
         // falls through to the epilogue. The out block address is known
         // at emission time (`status` is its first field).

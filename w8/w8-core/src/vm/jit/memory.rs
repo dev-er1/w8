@@ -23,7 +23,7 @@ use windows_sys::Win32::System::Memory::{
 
 #[cfg(unix)]
 use libc::{
-    MAP_ANONYMOUS, MAP_FAILED, MAP_PRIVATE, PROT_EXEC, PROT_READ, PROT_WRITE, c_int, mmap,
+    MAP_ANONYMOUS, MAP_FAILED, MAP_PRIVATE, PROT_READ, PROT_WRITE, c_int, mmap,
     mprotect, munmap,
 };
 #[cfg(unix)]
