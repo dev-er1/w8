@@ -5,7 +5,7 @@ Below are instructions on how you can help.
 ## How to Contribute
 1. Read the [documentation](docs/Architecture/Architecture.md).
 2. Find an issue you want to solve or a feature you want to add.
-3. If the change affects W8's architecture, ISA, or bytecode format, create an Issue to discuss it before starting work.
+3. If the change affects W8's architecture, ISA, or bytecode format, create an issue to discuss it before starting work.
 4. Fork the repository and create a new branch for your work.
 5. Make your changes.
 6. Make sure the code passes CI and all tests.
@@ -25,6 +25,11 @@ Try not to mix multiple unrelated changes in a single Pull Request.
 Before submitting a Pull Request, make sure that the code follows the project's standards. To run CI locally, execute one of the scripts below depending on your shell:
 - [PowerShell CI script](scripts/ci/ci.ps1);
 - [Sh CI script](scripts/ci/ci.sh).
+
+## Writing Documentation
+When writing documentation (whether in the code or in separate documents), it is advisable to avoid colloquial expressions.
+
+Code comments must be written exclusively in **English**.
 
 ## Issues
 - Bug report:
